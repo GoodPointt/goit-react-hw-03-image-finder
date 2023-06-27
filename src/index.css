@@ -44,17 +44,17 @@ img {
   height: auto;
 }
 
-section {
+/* section {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 
-.root__div {
+/* .root__div {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   font-size: 24px;
-}
+} */
