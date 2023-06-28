@@ -1,18 +1,32 @@
+import {
+  SearchBar,
+  SearchBtnLable,
+  SearchFormBtn,
+  SearchFormInput,
+  StyledSearchForm,
+} from 'components/Styled';
+import { ReactComponent as SearchIcon } from 'img/search.svg';
+import PropTypes from 'prop-types';
+
 export const SearchForm = ({ onSearch }) => {
   return (
-    <div className="Searchbar">
-      <form className="SearchForm" onSubmit={onSearch}>
-        <button
-          type="submit"
-          className="SearchForm-button"
-          name="query"
-        ></button>
-        <input
+    <SearchBar>
+      <StyledSearchForm onSubmit={onSearch}>
+        <SearchFormBtn type="submit" className="SearchForm-button" name="query">
+          <SearchBtnLable>Search</SearchBtnLable>
+          <SearchIcon width="35 " height="35" />
+        </SearchFormBtn>
+        <SearchFormInput
           type="text"
-          className="SearchForm-input"
           placeholder="Search images and photos..."
+          autoComplete="off"
+          autoFocus
         />
-      </form>
-    </div>
+      </StyledSearchForm>
+    </SearchBar>
   );
+};
+
+SearchForm.propTypes = {
+  onSearch: PropTypes.func.isRequired,
 };

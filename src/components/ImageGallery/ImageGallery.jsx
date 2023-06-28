@@ -1,24 +1,12 @@
-export const ImageGallery = ({ openModal }) => {
+import { ImageGalleryList } from 'components/Styled';
+import PropTypes from 'prop-types';
+
+export const ImageGallery = ({ children }) => {
   return (
-    <ul className="ImageGallery">
-      <li className="ImageGalleryItem" onClick={openModal}>
-        <img src="" alt="" className="ImageGalleryItem-image" />
-      </li>
-      <li className="ImageGalleryItem">
-        <img src="" alt="" className="ImageGalleryItem-image" />
-      </li>
-      <li className="ImageGalleryItem">
-        <img src="" alt="" className="ImageGalleryItem-image" />
-      </li>
-      <li className="ImageGalleryItem">
-        <img src="" alt="" className="ImageGalleryItem-image" />
-      </li>
-      <li className="ImageGalleryItem">
-        <img src="" alt="" className="ImageGalleryItem-image" />
-      </li>
-      <li className="ImageGalleryItem">
-        <img src="" alt="" className="ImageGalleryItem-image" />
-      </li>
-    </ul>
+    <ImageGalleryList className="ImageGallery">{children}</ImageGalleryList>
   );
+};
+
+ImageGallery.propTypes = {
+  optionalElement: PropTypes.element,
 };

@@ -26,7 +26,6 @@ export class Modal extends Component {
   };
 
   render() {
-    console.log(this.props.children);
     return createPortal(
       <ModalBackdrop onClick={this.handleBackdropClick}>
         <ModalContent>{this.props.children}</ModalContent>
