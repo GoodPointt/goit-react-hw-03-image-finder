@@ -51,6 +51,7 @@ export class App extends Component {
     } = this.state;
 
     showModal ? this.bgScrollToggle('hidden') : this.bgScrollToggle('');
+
     return (
       <StyledApp>
         {loading && (

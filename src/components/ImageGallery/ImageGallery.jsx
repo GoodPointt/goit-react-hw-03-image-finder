@@ -38,7 +38,10 @@ export class ImageGallery extends Component {
       );
     }
 
-    if (this.state.searchResult !== prevState.searchResult) {
+    if (
+      this.state.searchResult.length !== prevState.searchResult.length &&
+      prevState.searchResult.length !== 0
+    ) {
       const { scrollHeight, clientHeight } = document.documentElement;
       const scrollPosition = scrollHeight - clientHeight;
 

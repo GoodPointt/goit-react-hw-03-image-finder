@@ -22,16 +22,15 @@ export const ModalContent = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  /* width: calc(100vw - 40px); */
   width: 95vw;
-  max-width: 1280px;
-  /* padding: 20px; */
+  max-width: 1080px;
   background-color: #212121;
   border-radius: 10px;
   box-shadow: 0px 0px 29px #d4d4d4, 0px 0px 0px 0px #000,
     0px 0px 0px 0px #252525;
 
-  /* max-width: calc(100vw - 24px); */
-  max-height: calc(100vh - 24px);
+  max-height: calc(100vh - 50px);
 `;
 
 export const Loader = styled.div`
