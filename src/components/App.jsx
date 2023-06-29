@@ -19,13 +19,12 @@ export class App extends Component {
     largeImg: { largeImgPath: null, tags: '' },
   };
 
-  componentDidMount() {}
-
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
       this.setState({
         currentPage: 1,
         loading: true,
+        searchResult: [],
       });
       this.fetchImgs(BASE_URL, API_KEY, perPage);
     }
@@ -53,11 +52,10 @@ export class App extends Component {
           );
         }
 
-        toast.success(`We found ${total} ${this.state.searchQuery}s for you`);
-        this.setState({
-          searchResult: hits,
+        this.setState(prevState => ({
+          searchResult: [...prevState.searchResult, ...hits],
           loading: false,
-        });
+        }));
       })
       .catch(error =>
         toast.error(`Sorry! But something go wrong ${error.message}`)
@@ -82,7 +80,20 @@ export class App extends Component {
   };
 
   loadMore = () => {
-    this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
+    this.setState(
+      prevState => ({ currentPage: prevState.currentPage + 1 }),
+      () => {
+        setTimeout(() => {
+          const { scrollHeight, clientHeight } = document.documentElement;
+          const scrollPosition = scrollHeight - clientHeight;
+
+          window.scrollTo({
+            top: scrollPosition,
+            behavior: 'smooth',
+          });
+        }, 400);
+      }
+    );
   };
 
   bgScrollToggle = value => {
@@ -91,14 +102,14 @@ export class App extends Component {
 
   render() {
     const {
-      searchResult,
       largeImg: { largeImgPath, tags },
+      searchResult,
+      searchQuery,
       loading,
       showModal,
     } = this.state;
 
     showModal ? this.bgScrollToggle('hidden') : this.bgScrollToggle('');
-    console.log(searchResult);
     return (
       <StyledApp>
         {loading && (
@@ -116,14 +127,13 @@ export class App extends Component {
           </Loader>
         )}
         <SearchForm onSearch={this.onSearch} />
-        <ImageGallery>
-          <ImageGalleryItem
-            onImgClick={this.toggleModal}
-            searchResult={searchResult}
-          />
-        </ImageGallery>
+        <ImageGallery
+          onImgClick={this.toggleModal}
+          searchResult={searchResult}
+          searchQuery={searchQuery}
+        />
 
-        {searchResult.length > 11 && (
+        {searchResult.length >= 12 && (
           <Button type="button" onClick={this.loadMore}>
             Load more...
           </Button>
