@@ -1,26 +1,119 @@
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
-import { ImageGalleryList } from 'components/Styled';
+import { Button, ImageGalleryList } from 'components/Styled';
+import { BASE_URL, API_KEY, perPage } from 'api/api';
+import { toast } from 'react-toastify';
+
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 
-// = ({ onImgClick, searchResult }) =>
 export class ImageGallery extends Component {
+  state = {
+    currentPage: 1,
+    searchResult: [],
+    total: null,
+    showLoadMore: false,
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.searchQuery !== this.props.searchQuery) {
+      this.props.loaderToggle(true);
+
+      this.setState({
+        currentPage: 1,
+        searchResult: [],
+        showLoadMore: false,
+      });
+
+      this.fetchImgs(BASE_URL, API_KEY, perPage);
+    }
+
+    if (this.state.currentPage !== prevState.currentPage) {
+      this.props.loaderToggle(true);
+      this.fetchImgs(BASE_URL, API_KEY, perPage);
+    }
+
+    if (this.state.total !== prevState.total) {
+      toast.success(
+        `We found ${this.state.total} ${this.props.searchQuery}s for you`
+      );
+    }
+  }
+
+  fetchImgs = (BASE_URL, API_KEY, perPage) => {
+    const SEARCH_URL = `${BASE_URL}?q=${this.props.searchQuery}&page=${this.state.currentPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
+
+    fetch(SEARCH_URL)
+      .then(res => {
+        if (res.ok) return res.json();
+
+        return Promise.reject(new Error('Oops! 😒'));
+      })
+      .then(({ hits, total }) => {
+        if (hits.length === 0) {
+          this.props.loaderToggle(false);
+          return toast.warn(
+            `Sorry! But nothing found by your query "${this.props.searchQuery}"`
+          );
+        }
+        this.setState(prevState => ({
+          searchResult: [...prevState.searchResult, ...hits],
+          total,
+          showLoadMore: total / this.state.currentPage > 12,
+        }));
+      })
+      .catch(error =>
+        toast.error(`Sorry! But something go wrong ${error.message}`)
+      )
+      .finally(() => {
+        this.props.loaderToggle(false);
+      });
+  };
+
+  loadMore = () => {
+    this.setState(
+      prevState => ({ currentPage: prevState.currentPage + 1 }),
+      () => {
+        setTimeout(() => {
+          const { scrollHeight, clientHeight } = document.documentElement;
+          const scrollPosition = scrollHeight - clientHeight;
+
+          window.scrollTo({
+            top: scrollPosition,
+            behavior: 'smooth',
+          });
+        }, 400);
+      }
+    );
+  };
+
   render() {
+    const { showLoadMore, searchResult } = this.state;
+    console.log(searchResult);
     return (
-      <ImageGalleryList>
-        {this.props.searchResult &&
-          this.props.searchResult.map(searchResultEl => (
-            <ImageGalleryItem
-              key={searchResultEl.id}
-              onImgClick={this.props.onImgClick}
-              searchResultEl={searchResultEl}
-            />
-          ))}
-      </ImageGalleryList>
+      <>
+        <ImageGalleryList>
+          {searchResult &&
+            searchResult.map(searchResultEl => (
+              <ImageGalleryItem
+                key={searchResultEl.id}
+                onImgClick={this.props.onImgClick}
+                searchResultEl={searchResultEl}
+              />
+            ))}
+        </ImageGalleryList>
+
+        {showLoadMore && (
+          <Button type="button" onClick={this.loadMore}>
+            Load more...
+          </Button>
+        )}
+      </>
     );
   }
 }
 
-// ImageGallery.propTypes = {
-//   optionalElement: PropTypes.element,
-// };
+ImageGallery.propTypes = {
+  onImgClick: PropTypes.func.isRequired,
+  loaderToggle: PropTypes.func.isRequired,
+  searchQuery: PropTypes.string.isRequired,
+};

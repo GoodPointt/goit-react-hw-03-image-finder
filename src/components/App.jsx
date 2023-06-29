@@ -2,64 +2,19 @@ import { Component } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { SearchForm } from './SearchForm/SearchForm';
 import { Modal } from './Modal/Modal';
-import { BASE_URL, API_KEY, perPage } from 'api/api';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
+
+import { Loader, StyledApp } from './Styled';
+
 import { BallTriangle } from 'react-loader-spinner';
-import { Button, Loader, StyledApp } from './Styled';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
   state = {
     searchQuery: '',
-    currentPage: 1,
-    searchResult: [],
+    largeImg: { largeImgPath: null, tags: '' },
     showModal: false,
     loading: false,
-    largeImg: { largeImgPath: null, tags: '' },
-  };
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchQuery !== this.state.searchQuery) {
-      this.setState({
-        currentPage: 1,
-        loading: true,
-        searchResult: [],
-      });
-      this.fetchImgs(BASE_URL, API_KEY, perPage);
-    }
-
-    if (this.state.currentPage !== prevState.currentPage) {
-      this.setState({
-        loading: true,
-      });
-      this.fetchImgs(BASE_URL, API_KEY, perPage);
-    }
-  }
-
-  fetchImgs = (BASE_URL, API_KEY, perPage) => {
-    const SEARCH_URL = `${BASE_URL}?q=${this.state.searchQuery}&page=${this.state.currentPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
-
-    fetch(SEARCH_URL)
-      .then(res => res.json())
-      .then(({ hits, total }) => {
-        if (hits.length === 0) {
-          this.setState({
-            loading: false,
-          });
-          return toast.warn(
-            `Sorry! But nothing found by your query "${this.state.searchQuery}"`
-          );
-        }
-
-        this.setState(prevState => ({
-          searchResult: [...prevState.searchResult, ...hits],
-          loading: false,
-        }));
-      })
-      .catch(error =>
-        toast.error(`Sorry! But something go wrong ${error.message}`)
-      );
   };
 
   toggleModal = (img, alts) => {
@@ -79,31 +34,17 @@ export class App extends Component {
     this.setState({ searchQuery: searchInput });
   };
 
-  loadMore = () => {
-    this.setState(
-      prevState => ({ currentPage: prevState.currentPage + 1 }),
-      () => {
-        setTimeout(() => {
-          const { scrollHeight, clientHeight } = document.documentElement;
-          const scrollPosition = scrollHeight - clientHeight;
-
-          window.scrollTo({
-            top: scrollPosition,
-            behavior: 'smooth',
-          });
-        }, 400);
-      }
-    );
-  };
-
   bgScrollToggle = value => {
     document.body.style.overflow = value;
+  };
+
+  loaderToggle = bool => {
+    this.setState({ loading: bool });
   };
 
   render() {
     const {
       largeImg: { largeImgPath, tags },
-      searchResult,
       searchQuery,
       loading,
       showModal,
@@ -129,15 +70,9 @@ export class App extends Component {
         <SearchForm onSearch={this.onSearch} />
         <ImageGallery
           onImgClick={this.toggleModal}
-          searchResult={searchResult}
+          loaderToggle={this.loaderToggle}
           searchQuery={searchQuery}
         />
-
-        {searchResult.length >= 12 && (
-          <Button type="button" onClick={this.loadMore}>
-            Load more...
-          </Button>
-        )}
 
         {showModal && (
           <Modal closeModal={this.toggleModal}>
