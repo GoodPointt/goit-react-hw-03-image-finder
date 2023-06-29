@@ -10,12 +10,10 @@ export class Modal extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
 
-    if (this.props.showModal === true) {
-      this.scrollY = window.scrollY;
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${this.scrollY}px`;
-    }
+    this.scrollY = window.scrollY;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${this.scrollY}px`;
   }
 
   componentWillUnmount() {
