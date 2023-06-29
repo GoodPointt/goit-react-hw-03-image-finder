@@ -83,12 +83,19 @@ export class App extends Component {
     this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
   };
 
+  bgScrollToggle = value => {
+    document.body.style.overflow = value;
+  };
+
   render() {
     const {
       searchResult,
       largeImg: { largeImgPath, tags },
       loading,
+      showModal,
     } = this.state;
+
+    showModal ? this.bgScrollToggle('hidden') : this.bgScrollToggle('');
 
     return (
       <StyledApp>
@@ -120,7 +127,7 @@ export class App extends Component {
           </Button>
         )}
 
-        {this.state.showModal && (
+        {showModal && (
           <Modal closeModal={this.toggleModal}>
             <img src={largeImgPath} alt={tags} />
           </Modal>

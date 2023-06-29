@@ -23,7 +23,7 @@ export const ModalContent = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   width: fit-content;
-  padding: 20px;
+  /* padding: 20px; */
   background-color: #212121;
   border-radius: 10px;
   box-shadow: 0px 0px 29px #d4d4d4, 0px 0px 0px 0px #000,
@@ -100,7 +100,7 @@ export const SearchBar = styled.header`
   top: 0;
   left: 0;
   position: sticky;
-  z-index: 1100;
+  /* z-index: 1100; */
   display: flex;
   justify-content: center;
   align-items: center;
