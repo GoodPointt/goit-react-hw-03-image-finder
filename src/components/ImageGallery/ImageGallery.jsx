@@ -37,6 +37,16 @@ export class ImageGallery extends Component {
         `We found ${this.state.total} ${this.props.searchQuery}s for you`
       );
     }
+
+    if (this.state.searchResult !== prevState.searchResult) {
+      const { scrollHeight, clientHeight } = document.documentElement;
+      const scrollPosition = scrollHeight - clientHeight;
+
+      window.scrollTo({
+        top: scrollPosition,
+        behavior: 'smooth',
+      });
+    }
   }
 
   fetchImgs = async (BASE_URL, API_KEY, perPage) => {
@@ -69,20 +79,7 @@ export class ImageGallery extends Component {
   };
 
   loadMore = () => {
-    this.setState(
-      prevState => ({ currentPage: prevState.currentPage + 1 }),
-      () => {
-        setTimeout(() => {
-          const { scrollHeight, clientHeight } = document.documentElement;
-          const scrollPosition = scrollHeight - clientHeight;
-
-          window.scrollTo({
-            top: scrollPosition,
-            behavior: 'smooth',
-          });
-        }, 400);
-      }
-    );
+    this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
   };
 
   render() {
