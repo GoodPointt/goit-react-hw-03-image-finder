@@ -6,6 +6,8 @@ import { BASE_URL, API_KEY, perPage } from 'api/api';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { BallTriangle } from 'react-loader-spinner';
 import { Button, Loader, StyledApp } from './Styled';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
   state = {
@@ -46,7 +48,7 @@ export class App extends Component {
           this.setState({
             loading: false,
           });
-          return alert(
+          return toast.warn(
             `Sorry! But nothing found by your query "${this.state.searchQuery}"`
           );
         }
@@ -55,7 +57,9 @@ export class App extends Component {
           loading: false,
         });
       })
-      .catch(error => alert(`Sorry! But something go wrong ${error.message}`));
+      .catch(error =>
+        toast.error(`Sorry! But something go wrong ${error.message}`)
+      );
   };
 
   toggleModal = (img, alts) => {
@@ -69,7 +73,7 @@ export class App extends Component {
     e.preventDefault();
     const searchInput = e.currentTarget.elements[1].value.trim();
     if (searchInput === '') {
-      alert('Enter search query fisrst!');
+      toast.info('Enter search query fisrst!');
       return;
     }
     this.setState({ searchQuery: searchInput });
@@ -121,6 +125,19 @@ export class App extends Component {
             <img src={largeImgPath} alt={tags} />
           </Modal>
         )}
+
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </StyledApp>
     );
   }
