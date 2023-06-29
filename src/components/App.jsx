@@ -38,10 +38,6 @@ export class App extends Component {
     this.setState({ loading: bool });
   };
 
-  bgScrollToggle = value => {
-    document.body.style.overflow = value;
-  };
-
   render() {
     const {
       largeImg: { largeImgPath, tags },

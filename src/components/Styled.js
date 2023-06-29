@@ -24,7 +24,7 @@ export const ModalContent = styled.div`
   transform: translate(-50%, -50%);
   /* width: calc(100vw - 40px); */
   width: 95vw;
-  max-width: 1080px;
+  max-width: 720px;
   background-color: #212121;
   border-radius: 10px;
   box-shadow: 0px 0px 29px #d4d4d4, 0px 0px 0px 0px #000,

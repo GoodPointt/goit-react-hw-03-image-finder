@@ -11,8 +11,10 @@ export class Modal extends Component {
     window.addEventListener('keydown', this.handleKeyDown);
 
     if (this.props.showModal === true) {
+      this.scrollY = window.scrollY;
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
+      document.body.style.top = `-${this.scrollY}px`;
     }
   }
 
@@ -21,6 +23,7 @@ export class Modal extends Component {
 
     document.body.style.overflow = 'auto';
     document.body.style.position = 'static';
+    window.scrollTo(0, this.scrollY);
   }
 
   handleKeyDown = e => {
