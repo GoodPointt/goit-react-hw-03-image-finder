@@ -39,34 +39,33 @@ export class ImageGallery extends Component {
     }
   }
 
-  fetchImgs = (BASE_URL, API_KEY, perPage) => {
+  fetchImgs = async (BASE_URL, API_KEY, perPage) => {
     const SEARCH_URL = `${BASE_URL}?q=${this.props.searchQuery}&page=${this.state.currentPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
 
-    fetch(SEARCH_URL)
-      .then(res => {
-        if (res.ok) return res.json();
-
-        return Promise.reject(new Error('Oops! 😒'));
-      })
-      .then(({ hits, total }) => {
+    try {
+      const res = await fetch(SEARCH_URL);
+      if (res.ok) {
+        const { hits, total } = await res.json();
         if (hits.length === 0) {
           this.props.loaderToggle(false);
-          return toast.warn(
+          toast.warn(
             `Sorry! But nothing found by your query "${this.props.searchQuery}"`
           );
+        } else {
+          this.setState(prevState => ({
+            searchResult: [...prevState.searchResult, ...hits],
+            total,
+            showLoadMore: total / this.state.currentPage > 12,
+          }));
         }
-        this.setState(prevState => ({
-          searchResult: [...prevState.searchResult, ...hits],
-          total,
-          showLoadMore: total / this.state.currentPage > 12,
-        }));
-      })
-      .catch(error =>
-        toast.error(`Sorry! But something go wrong ${error.message}`)
-      )
-      .finally(() => {
-        this.props.loaderToggle(false);
-      });
+      } else {
+        throw new Error('Oops! 😒');
+      }
+    } catch (error) {
+      toast.error(`Sorry! But something go wrong ${error.message}`);
+    } finally {
+      this.props.loaderToggle(false);
+    }
   };
 
   loadMore = () => {
@@ -88,7 +87,6 @@ export class ImageGallery extends Component {
 
   render() {
     const { showLoadMore, searchResult } = this.state;
-    console.log(searchResult);
     return (
       <>
         <ImageGalleryList>
