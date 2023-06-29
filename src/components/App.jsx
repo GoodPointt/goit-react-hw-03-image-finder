@@ -43,7 +43,7 @@ export class App extends Component {
 
     fetch(SEARCH_URL)
       .then(res => res.json())
-      .then(({ hits }) => {
+      .then(({ hits, total }) => {
         if (hits.length === 0) {
           this.setState({
             loading: false,
@@ -52,6 +52,8 @@ export class App extends Component {
             `Sorry! But nothing found by your query "${this.state.searchQuery}"`
           );
         }
+
+        toast.success(`We found ${total} ${this.state.searchQuery}s for you`);
         this.setState({
           searchResult: hits,
           loading: false,
@@ -96,7 +98,7 @@ export class App extends Component {
     } = this.state;
 
     showModal ? this.bgScrollToggle('hidden') : this.bgScrollToggle('');
-
+    console.log(searchResult);
     return (
       <StyledApp>
         {loading && (
@@ -135,7 +137,7 @@ export class App extends Component {
 
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={1700}
           hideProgressBar={true}
           newestOnTop={false}
           closeOnClick
