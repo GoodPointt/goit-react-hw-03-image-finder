@@ -34,12 +34,12 @@ export class App extends Component {
     this.setState({ searchQuery: searchInput });
   };
 
-  bgScrollToggle = value => {
-    document.body.style.overflow = value;
-  };
-
   loaderToggle = bool => {
     this.setState({ loading: bool });
+  };
+
+  bgScrollToggle = value => {
+    document.body.style.overflow = value;
   };
 
   render() {
@@ -49,8 +49,6 @@ export class App extends Component {
       loading,
       showModal,
     } = this.state;
-
-    showModal ? this.bgScrollToggle('hidden') : this.bgScrollToggle('');
 
     return (
       <StyledApp>
@@ -76,7 +74,7 @@ export class App extends Component {
         />
 
         {showModal && (
-          <Modal closeModal={this.toggleModal}>
+          <Modal closeModal={this.toggleModal} showModal={showModal}>
             <img src={largeImgPath} alt={tags} />
           </Modal>
         )}
